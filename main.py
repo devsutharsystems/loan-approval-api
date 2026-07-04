@@ -1,20 +1,15 @@
-"""
-Loan Approval Prediction - FastAPI Application
-
-Serves predictions from the model trained in train.py. Uses the exact same
-encoders and scaler that were fit during training to guarantee consistent
-preprocessing between training and inference.
-"""
-
 import pickle
-
 import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from preprocessing_utils import encode_features, scale_features
 
-app = FastAPI(title="Loan Approval Prediction API")
+app = FastAPI(
+    title="Credit Risk Classification and Deployment Engine",
+    description="A machine learning-powered REST API for classifying the credit risk of loan applicants.",
+    version="1.0.0",
+)
 
 # Load trained artifacts once at startup
 with open("model.pkl", "rb") as f:
@@ -27,7 +22,7 @@ with open("label_encoder_y.pkl", "rb") as f:
     label_encoder_y = pickle.load(f)
 
 
-class LoanApplication(BaseModel):
+class CreditRiskRequest(BaseModel):
     gender: str = Field(..., examples=["Male"])
     married: str = Field(..., examples=["Yes"])
     dependents: str = Field(..., examples=["0"])
@@ -40,11 +35,13 @@ class LoanApplication(BaseModel):
 
 @app.get("/")
 def root():
-    return {"status": "Loan Approval Prediction API is running"}
+    return {
+        "status": "Credit Risk Classification and Deployment Engine is running"
+    }
 
 
-@app.post("/predict")
-def predict(application: LoanApplication):
+@app.post("/predict-risk")
+def predict(application: CreditRiskRequest):
     # Build a single-row DataFrame matching the training feature columns/order
     row = pd.DataFrame(
         [
@@ -70,6 +67,6 @@ def predict(application: LoanApplication):
     status = label_encoder_y.inverse_transform([prediction])[0]
 
     return {
-        "loan_status": "Approved" if status == "Y" else "Not Approved",
+        "credit_risk": "Low Risk" if status == "Y" else "High Risk",
         "confidence": round(float(confidence), 3),
     }
