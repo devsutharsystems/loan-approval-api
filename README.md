@@ -307,5 +307,5 @@ http://13.60.78.56:8001/docs
 
 **Dev Suthar**
 
-- GitHub: https://github.com/yourusername
-- LinkedIn: https://linkedin.com/in/yourprofile
+- GitHub: https://github.com/devsutharsystems
+- LinkedIn: https://linkedin.com/in/i-dev-suthar
